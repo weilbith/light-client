@@ -25,8 +25,8 @@ anchor_2: &executor_parameter
     executor:
       type: executor
       default: base-executor
-
 anchor_4: &run_on_release_tag_only
+
   filters:
     tags:
       only: /^v\d+\.\d+\.\d+$/
@@ -100,82 +100,6 @@ jobs:
       - check-license:
           directory: raiden-cli
 
-  lint:
-    executor: base-executor
-    working_directory: << pipeline.parameters.working_directory >>
-    steps:
-      - attach_workspace: *attach_options
-      - run: pnpm run lint --recursive
-
-  test_sdk_unit:
-    executor: base-executor
-    working_directory: << pipeline.parameters.working_directory >>
-    steps:
-      - attach_workspace: *attach_options
-      - run:
-          name: Run unit tests
-          command: pnpm run test:unit --filter raiden-ts -- --ci --runInBand --reporters=default --reporters=jest-junit
-          environment:
-            JEST_JUNIT_OUTPUT_DIR: "reports/junit"
-      - store_test_results:
-          path: reports/junit
-      - store_artifacts:
-          path: reports/junit
-      - run:
-          name: "Upload coverage"
-          command: bash <(curl -s https://codecov.io/bash) -F sdk_unit -F sdk -C $CIRCLE_SHA1
-
-  test_sdk_integration:
-    executor: base-executor
-    working_directory: << pipeline.parameters.working_directory >>
-    steps:
-      - attach_workspace: *attach_options
-      - run:
-          name: Run unit tests
-          command: pnpm run test:integration --filter raiden-ts -- --ci --runInBand --reporters=default --reporters=jest-junit
-          environment:
-            JEST_JUNIT_OUTPUT_DIR: "reports/junit"
-      - store_test_results:
-          path: reports/junit
-      - store_artifacts:
-          path: reports/junit
-      - run:
-          name: "Upload coverage"
-          command: bash <(curl -s https://codecov.io/bash) -F sdk_integration -F sdk -C $CIRCLE_SHA1
-
-  test_dapp_unit:
-    executor: base-executor
-    working_directory: << pipeline.parameters.working_directory >>
-    steps:
-      - attach_workspace: *attach_options
-      - run:
-          name: Run unit tests
-          command: pnpm run test:unit --filter raiden-dapp -- --ci --runInBand --reporters=default --reporters=jest-junit
-          environment:
-            JEST_JUNIT_OUTPUT_DIR: "reports/junit"
-      - store_test_results:
-          path: reports/junit
-      - store_artifacts:
-          path: reports/junit
-      - run:
-          name: "Upload coverage"
-          command: bash <(curl -s https://codecov.io/bash) -F dapp -C $CIRCLE_SHA1
-
-  test_dapp_e2e:
-    executor: e2e-environment-executor
-    working_directory: << pipeline.parameters.working_directory >>
-    steps:
-      - attach_workspace: *attach_options
-      - run:
-          name: Run e2e tests
-          command: pnpm run test:e2e --filter raiden-dapp -- --headless
-      - store_test_results:
-          path: raiden-dapp/tests/e2e/results/reports
-      - store_artifacts:
-          path: raiden-dapp/tests/e2e/results/videos
-      - store_artifacts:
-          path: raiden-dapp/tests/e2e/results/screenshots
-
   build_sdk:
     <<: *executor_parameter
     executor: << parameters.executor >>
@@ -231,6 +155,104 @@ jobs:
           path: raiden-cli/raiden-cli.tar.gz
           destination: raiden-cli.tar.gz
 
+  lint:
+    executor: base-executor
+    working_directory: << pipeline.parameters.working_directory >>
+    steps:
+      - attach_workspace: *attach_options
+      - run: pnpm run lint --recursive
+
+  test_sdk_unit:
+    executor: base-executor
+    working_directory: << pipeline.parameters.working_directory >>
+    steps:
+      - attach_workspace: *attach_options
+      - run:
+          name: Run unit tests
+          command: pnpm run test:unit --filter raiden-ts -- --ci --runInBand --reporters=default --reporters=jest-junit
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: "reports/junit"
+      - store_test_results:
+          path: reports/junit
+      - store_artifacts:
+          path: reports/junit
+      - run:
+          name: "Upload coverage"
+          command: bash <(curl -s https://codecov.io/bash) -F sdk_unit -F sdk -C $CIRCLE_SHA1
+
+  test_sdk_integration:
+    executor: base-executor
+    working_directory: << pipeline.parameters.working_directory >>
+    steps:
+      - attach_workspace: *attach_options
+      - run:
+          name: Run unit tests
+          command: pnpm run test:integration --filter raiden-ts -- --ci --runInBand --reporters=default --reporters=jest-junit
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: "reports/junit"
+      - store_test_results:
+          path: reports/junit
+      - store_artifacts:
+          path: reports/junit
+      - run:
+          name: "Upload coverage"
+          command: bash <(curl -s https://codecov.io/bash) -F sdk_integration -F sdk -C $CIRCLE_SHA1
+
+  test_sdk_e2e:
+    executor: e2e-environment-executor
+    working_directory: << pipeline.parameters.working_directory >>
+    steps:
+      - attach_workspace: *attach_options
+      - run:
+          name: Run end-to-end tests
+          command: >
+            source /etc/profile.d/smartcontracts.sh &&
+            pnpm run test:e2e --filter raiden-ts --
+            --ci --runInBand --forceExit
+            --reporters=default --reporters=jest-junit
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: "reports/junit"
+      - store_test_results:
+          path: reports/junit
+      - store_artifacts:
+          path: reports/junit
+      - run:
+          name: "Upload coverage"
+          command: bash <(curl -s https://codecov.io/bash) -F sdk_e2e -F sdk -C $CIRCLE_SHA1
+
+  test_dapp_unit:
+    executor: base-executor
+    working_directory: << pipeline.parameters.working_directory >>
+    steps:
+      - attach_workspace: *attach_options
+      - run:
+          name: Run unit tests
+          command: pnpm run test:unit --filter raiden-dapp -- --ci --runInBand --reporters=default --reporters=jest-junit
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: "reports/junit"
+      - store_test_results:
+          path: reports/junit
+      - store_artifacts:
+          path: reports/junit
+      - run:
+          name: "Upload coverage"
+          command: bash <(curl -s https://codecov.io/bash) -F dapp -C $CIRCLE_SHA1
+
+  test_dapp_e2e:
+    executor: e2e-environment-executor
+    working_directory: << pipeline.parameters.working_directory >>
+    steps:
+      - attach_workspace: *attach_options
+      - run:
+          name: Run e2e tests
+          command: pnpm run test:e2e --filter raiden-dapp -- --headless
+      - store_test_results:
+          path: raiden-dapp/tests/e2e/results/reports
+      - store_artifacts:
+          path: raiden-dapp/tests/e2e/results/videos
+      - store_artifacts:
+          path: raiden-dapp/tests/e2e/results/screenshots
+
   generate_documentation:
     executor: base-executor
     working_directory: << pipeline.parameters.working_directory >>
@@ -270,28 +292,6 @@ jobs:
           name: Publish on npm
           command: pnpm publish --no-git-checks --filter raiden-ts
 
-  test_sdk_e2e:
-    executor: e2e-environment-executor
-    working_directory: << pipeline.parameters.working_directory >>
-    steps:
-      - attach_workspace: *attach_options
-      - run:
-          name: Run end-to-end tests
-          command: >
-            source /etc/profile.d/smartcontracts.sh &&
-            pnpm run test:e2e --filter raiden-ts --
-            --ci --runInBand --forceExit
-            --reporters=default --reporters=jest-junit
-          environment:
-            JEST_JUNIT_OUTPUT_DIR: "reports/junit"
-      - store_test_results:
-          path: reports/junit
-      - store_artifacts:
-          path: reports/junit
-      - run:
-          name: "Upload coverage"
-          command: bash <(curl -s https://codecov.io/bash) -F sdk_e2e -F sdk -C $CIRCLE_SHA1
-
 workflows:
   version: 2
   default_workflow:
@@ -307,14 +307,14 @@ workflows:
       - build_sdk:
           requires:
             - install
-      - lint:
-          requires:
-            - build_sdk
       - build_dapp:
           mode: development
           requires:
             - build_sdk
       - build_cli:
+          requires:
+            - build_sdk
+      - lint:
           requires:
             - build_sdk
       - test_sdk_unit:

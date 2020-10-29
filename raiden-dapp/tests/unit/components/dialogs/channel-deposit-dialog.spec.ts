@@ -4,7 +4,7 @@ import Vue from 'vue';
 import { TestData } from '../../data/mock-data';
 import { mockInput } from '../../utils/interaction-utils';
 import ChannelDepositDialog from '@/components/dialogs/ChannelDepositDialog.vue';
-import { BigNumber } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import flushPromises from 'flush-promises';
 
 Vue.use(Vuetify);

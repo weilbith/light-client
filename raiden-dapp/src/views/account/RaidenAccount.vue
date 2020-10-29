@@ -140,7 +140,7 @@ import ActionButton from '@/components/ActionButton.vue';
 import ErrorMessage from '@/components/ErrorMessage.vue';
 import Spinner from '@/components/icons/Spinner.vue';
 import { Token } from '@/model/types';
-import { bigNumberify, parseEther, BigNumber } from 'ethers/utils';
+import { BigNumber, utils } from 'ethers';
 
 @Component({
   components: { AmountInput, ActionButton, ErrorMessage, Spinner },
@@ -177,7 +177,7 @@ export default class RaidenAccount extends Vue {
   }
 
   get maximumAmount(): BigNumber {
-    return bigNumberify(parseEther(this.currentAccountBalance()));
+    return BigNumber.parse(utils.parseEther(this.currentAccountBalance()));
   }
 
   toggleDirection() {

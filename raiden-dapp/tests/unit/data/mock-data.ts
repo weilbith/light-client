@@ -1,12 +1,11 @@
 import { Token, Transfer } from '@/model/types';
-import { BigNumber, parseUnits } from 'ethers/utils';
+import { BigNumber, utils, constants } from 'ethers';
 
-import { Zero } from 'ethers/constants';
 import {
   Address,
   ChannelState,
   RaidenChannel,
-  RaidenChannels,
+  RaidenChannels
 } from 'raiden-ts';
 import { Route } from 'vue-router';
 import { RouteNames } from '@/router/route-names';
@@ -21,9 +20,9 @@ export class TestData {
   static token: Token = {
     address: '0xtoken',
     decimals: 5,
-    balance: parseUnits('1.2', 5),
+    balance: utils.parseUnits('1.2', 5),
     name: 'TestToken',
-    symbol: 'TTT',
+    symbol: 'TTT'
   };
 
   static openChannel = {
@@ -36,9 +35,9 @@ export class TestData {
     token: '0xd0A1E359811322d97991E03f863a0C30C2cF029C' as Address,
     tokenNetwork: '0x111157460c0F41EfD9107239B7864c062aA8B978' as Address,
     ownDeposit: new BigNumber(10 ** 8),
-    balance: Zero,
+    balance: constants.Zero,
     capacity: new BigNumber(10 ** 8),
-    ownWithdrawable: new BigNumber(10 ** 8),
+    ownWithdrawable: new BigNumber(10 ** 8)
   } as RaidenChannel;
 
   static settlingChannel = {
@@ -52,9 +51,9 @@ export class TestData {
     token: '0xd0A1E359811322d97991E03f863a0C30C2cF029C' as Address,
     tokenNetwork: '0x111157460c0F41EfD9107239B7864c062aA8B978' as Address,
     ownDeposit: new BigNumber(10 ** 8),
-    balance: Zero,
+    balance: constants.Zero,
     capacity: new BigNumber(10 ** 8),
-    ownWithdrawable: new BigNumber(10 ** 8),
+    ownWithdrawable: new BigNumber(10 ** 8)
   } as RaidenChannel;
 
   static settlableChannel = {
@@ -68,9 +67,9 @@ export class TestData {
     token: '0xd0A1E359811322d97991E03f863a0C30C2cF029C' as Address,
     tokenNetwork: '0x111157460c0F41EfD9107239B7864c062aA8B978' as Address,
     ownDeposit: new BigNumber(10 ** 8),
-    balance: Zero,
+    balance: constants.Zero,
     capacity: new BigNumber(10 ** 8),
-    ownWithdrawable: new BigNumber(10 ** 8),
+    ownWithdrawable: new BigNumber(10 ** 8)
   } as RaidenChannel;
 
   static closedChannel = {
@@ -84,33 +83,33 @@ export class TestData {
     token: '0xd0A1E359811322d97991E03f863a0C30C2cF029C' as Address,
     tokenNetwork: '0x111157460c0F41EfD9107239B7864c062aA8B978' as Address,
     ownDeposit: new BigNumber(10 ** 8),
-    balance: Zero,
+    balance: constants.Zero,
     capacity: new BigNumber(10 ** 8),
-    ownWithdrawable: new BigNumber(10 ** 8),
+    ownWithdrawable: new BigNumber(10 ** 8)
   } as RaidenChannel;
 
   static mockChannelArray = [
     TestData.openChannel,
     TestData.settlingChannel,
     TestData.settlableChannel,
-    TestData.closedChannel,
+    TestData.closedChannel
   ];
 
   static mockChannels: RaidenChannels = {
     '0xd0A1E359811322d97991E03f863a0C30C2cF029C': {
       '0x1D36124C90f53d491b6832F1c073F43E2550E35b': TestData.openChannel,
-      '0x82641569b2062B545431cF6D7F0A418582865ba7': TestData.settlingChannel,
-    },
+      '0x82641569b2062B545431cF6D7F0A418582865ba7': TestData.settlingChannel
+    }
   };
 
   static mockTokens: Tokens = {
     '0xd0A1E359811322d97991E03f863a0C30C2cF029C': {
       address: '0xd0A1E359811322d97991E03f863a0C30C2cF029C',
       decimals: 5,
-      balance: parseUnits('1.2', 5),
+      balance: utils.parseUnits('1.2', 5),
       name: 'TestToken',
-      symbol: 'TTT',
-    } as Token,
+      symbol: 'TTT'
+    } as Token
   };
 
   static mockRoute(
@@ -126,7 +125,7 @@ export class TestData {
       params,
       query: {},
       name: name,
-      meta: meta,
+      meta: meta
     };
   }
 
@@ -137,12 +136,12 @@ export class TestData {
     transferToken: {
       address: '0xtoken',
       decimals: 5,
-      balance: parseUnits('1.2', 5),
+      balance: utils.parseUnits('1.2', 5),
       name: 'TestToken',
-      symbol: 'TTT',
+      symbol: 'TTT'
     } as Token,
     transferTotal: new BigNumber(10 ** 8),
-    paymentId,
+    paymentId
   };
 
   static mockMediatedTransfer: Transfer = {
@@ -151,9 +150,9 @@ export class TestData {
     transferToken: {
       address: '0xtoken',
       decimals: 5,
-      balance: parseUnits('1.2', 5),
+      balance: utils.parseUnits('1.2', 5),
       name: 'TestToken',
-      symbol: 'TTT',
+      symbol: 'TTT'
     } as Token,
     transferTotal: new BigNumber(10 ** 8),
     hops: 1,
@@ -162,12 +161,12 @@ export class TestData {
     serviceToken: {
       address: '0xtoken',
       decimals: 5,
-      balance: parseUnits('1.2', 5),
+      balance: utils.parseUnits('1.2', 5),
       name: 'Service Token',
-      symbol: 'SVT',
+      symbol: 'SVT'
     } as Token,
     pfsAddress: 'https://pfsadr.org',
-    paymentId,
+    paymentId
   };
 
   static notifications: NotificationPayload = {
@@ -182,6 +181,6 @@ export class TestData {
     received: new Date('June 5, 1986'),
     txConfirmationBlock: 123,
     txHash: '0xTxHash',
-    txConfirmed: undefined,
+    txConfirmed: undefined
   };
 }

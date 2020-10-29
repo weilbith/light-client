@@ -5,7 +5,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import Vuetify from 'vuetify';
 import { $identicon } from '../../utils/mocks';
-import { BigNumber } from 'ethers/utils';
+import { BigNumber } from 'ethers';
 import Withdrawal from '@/components/account/Withdrawal.vue';
 import RaidenDialog from '@/components/dialogs/RaidenDialog.vue';
 
@@ -26,21 +26,21 @@ function createWrapper(
 ): Wrapper<Withdrawal> {
   $raiden = {
     getTokenBalance: jest.fn().mockResolvedValue(tokenBalance),
-    transferOnChainTokens: jest.fn(),
+    transferOnChainTokens: jest.fn()
   };
 
   const state = {
-    raidenAccountBalance,
+    raidenAccountBalance
   };
 
   const getters = {
     udcToken: () => {
       return {
         address: '0xuserdeposittoken',
-        balance: new BigNumber('0'),
+        balance: new BigNumber('0')
       };
     },
-    allTokens: () => [],
+    allTokens: () => []
   };
 
   const store = new Vuex.Store({ state, getters });
@@ -52,8 +52,8 @@ function createWrapper(
     mocks: {
       $identicon: $identicon(),
       $t: (msg: string) => msg,
-      $raiden,
-    },
+      $raiden
+    }
   });
 }
 

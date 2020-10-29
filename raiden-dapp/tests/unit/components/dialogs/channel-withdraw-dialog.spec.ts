@@ -4,7 +4,7 @@ import Vue from 'vue';
 import { TestData } from '../../data/mock-data';
 import { mockInput } from '../../utils/interaction-utils';
 import ChannelWithdrawDialog from '@/components/dialogs/ChannelWithdrawDialog.vue';
-import { BigNumber, formatUnits } from 'ethers/utils';
+import { BigNumber, utils } from 'ethers';
 import flushPromises from 'flush-promises';
 
 Vue.use(Vuetify);
@@ -49,7 +49,7 @@ describe('ChannelWithdraw.vue', () => {
   test("maximum of channel's capacity", async () => {
     mockInput(
       wrapper,
-      formatUnits(channel.capacity.add(1), TestData.token.decimals)
+      utils.formatUnits(channel.capacity.add(1), TestData.token.decimals)
     );
     await wrapper.vm.$nextTick();
     await flushPromises();
@@ -57,7 +57,7 @@ describe('ChannelWithdraw.vue', () => {
     expect(messages.exists()).toBe(true);
     expect(messages.text()).toEqual('amount-input.error.not-enough-funds');
 
-    mockInput(wrapper, formatUnits(channel.capacity, TestData.token.decimals));
+    mockInput(wrapper, utils.formatUnits(channel.capacity, TestData.token.decimals));
     await wrapper.vm.$nextTick();
     expect(wrapper.find('.v-messages__message').exists()).toBe(false);
   });

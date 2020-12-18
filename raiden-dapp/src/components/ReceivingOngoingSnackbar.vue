@@ -9,8 +9,16 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import { mapGetters } from 'vuex';
-import { of, Subject, Subscription, timer } from 'rxjs';
-import { debounce, distinctUntilChanged } from 'rxjs/operators';
+import { merge, Subject, Subscription, timer } from 'rxjs';
+import {
+  startWith,
+  distinctUntilChanged,
+  filter,
+  ignoreElements,
+  take,
+  switchMap,
+  endWith,
+} from 'rxjs/operators';
 import { Transfers } from '@/types';
 import { RaidenTransfer } from 'raiden-ts';
 
@@ -41,7 +49,16 @@ export default class ReceivingOngoingSnackbar extends Vue {
     this.sub = this.$receivingTransfersPending
       .pipe(
         distinctUntilChanged(),
-        debounce((pending) => (pending ? of(1) : timer(5000))),
+        filter((pending) => pending),
+        switchMap(() =>
+          merge(
+            timer(5000),
+            this.$receivingTransfersPending.pipe(
+              filter((pending) => !pending),
+              take(1),
+            ),
+          ).pipe(ignoreElements(), startWith(true), endWith(false)),
+        ),
       )
       .subscribe((pending) => (this.snackbarVisible = pending));
   }
